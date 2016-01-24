@@ -18,16 +18,17 @@
 	<SFML/OpenGL.hpp>
 	"Image.h"
 
-1453597762 source:c:\users\ivancea\desktop\github\imageeditor\image.cpp
+1453662034 source:c:\users\ivancea\desktop\github\imageeditor\image.cpp
 	"Image.h"
+	<iostream>
 	<fstream>
 	<cmath>
 
-1453596437 c:\users\ivancea\desktop\github\imageeditor\image.h
+1453657961 c:\users\ivancea\desktop\github\imageeditor\image.h
 	<string>
 	<SFML/Graphics.hpp>
 
-1453596427 source:c:\users\ivancea\desktop\github\imageeditor\main.cpp
+1453661176 source:c:\users\ivancea\desktop\github\imageeditor\main.cpp
 	<iostream>
 	<map>
 	<fstream>

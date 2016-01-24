@@ -1,5 +1,6 @@
 #include "Image.h"
 
+#include <iostream>
 #include <fstream>
 #include <cmath>
 
@@ -103,10 +104,115 @@ Image Image::copy(int offsetX, int offsetY, int width, int height) const{
     return temp;
 }
 
-bool Image::loadFromPBM(std::string archivo){
+int Image::compareTo(const Image& img) const{
+    if(!isValid() || !img.isValid()
+    || _x != img.getX() || _y != img.getY())
+        return -1;
+    int fails = 0;
+    for(int i=0; i<_x; i++)
+        for(int j=0; j<_y; j++)
+            if(_m[i][j] != img.get(i,j))
+                ++fails;
+    return fails;
+}
+
+Image Image::compareToMask(const Image& img, sf::Color equal, sf::Color different) const{
+    Image t;
+    if(!isValid() || !img.isValid()
+    || _x != img.getX() || _y != img.getY())
+        return t;
+    t.create(_x,_y, equal);
+    for(int i=0; i<_x; i++)
+        for(int j=0; j<_y; j++)
+            if(_m[i][j] != img.get(i,j))
+                t.set(i,j, different);
+    return t;
+}
+
+/// BUILD WITH "-mno-ms-bitfields" in GCC
+bool Image::loadFromBMP(std::string fileName){
+    std::ifstream f(fileName,std::ios::binary);
+    if(!f) return false;
+    BMPHeader header;
+    f.read((char*)&header, sizeof(header));
+    std::cout << "FileType: " << header.fileType[0] << header.fileType[1] << "\n"
+         << "FileSize: " << header.fileSize << "\n"
+         << "Reserved1: " << header.reserved1 << "\n"
+         << "Reserved2: " << header.reserved2 << "\n"
+         << "ImageDataStart: " << header.imageDataStart << "\n"
+         << "HeaderSize: " << header.headerSize << "\n"
+         << "Width: " << header.width << "\n"
+         << "Height: " << header.height << "\n"
+         << "PlainCount: " << header.plainCount << "\n"
+         << "BitsPerPixel: " << header.bitsPerPixel << "\n"
+         << "Compression: " << header.compression << "\n"
+         << "ImageSize: " << header.imageSize << "\n"
+         << "HorizontalResolution: " << header.horizontalResolution << "\n"
+         << "VerticalResolution: " << header.verticalResolution << "\n"
+         << "ColorTableSize: " << header.colorTableSize << "\n"
+         << "ImportantColorCounter: " << header.importantColorCounter << "\n" << std::endl;
+    if(header.width<=0 ||header.height<=0 || header.compression!=0
+    || header.fileType[0]!='B' || header.fileType[1]!='M'
+    || header.bitsPerPixel!=24)
+        return false;
+    if(isValid())
+        destroy(_m, _x,_y);
+    _x = header.width;
+    _y = header.height;
+
+    int padding = 4-(_x*3)%4;
+    char *buff = new char[_x*_y*3+padding*_y];
+    f.read(buff, _x*_y*3+padding*_y);
+    fill(_m, _x,_y);
+
+    for(int i=0; i<_x; i++){
+        for(int j=0; j<_y; j++){
+            char* t = buff + i*3 + padding*(_y-j-1) + (_y-j-1)*_x*3;
+            _m[i][j].r = t[2];
+            _m[i][j].g = t[1];
+            _m[i][j].b = t[0];
+        }
+    }
+    delete[] buff;
+    return true;
+}
+
+/// BUILD WITH "-mno-ms-bitfields" in GCC
+bool Image::saveToBMP(std::string fileName) const{
+    if(!isValid()) return false;
+    std::ofstream f(fileName, std::ios::trunc|std::ios::binary);
+    if(!f) return false;
+    BMPHeader header;
+    header.fileType[0] = 'B';
+    header.fileType[1] = 'M';
+    header.fileSize = _x*_y*3+54;
+    header.reserved1 = header.reserved2 = 0;
+    header.imageDataStart = 54;
+    header.headerSize = 40;
+    header.width = _x;
+    header.height = _y;
+    header.plainCount = 1;
+    header.bitsPerPixel = 24;
+    header.compression = 0;
+    header.imageSize = _x*_y*3;
+    header.horizontalResolution = 2834; // Maybe
+    header.verticalResolution = 2834; // Maybe
+    header.colorTableSize = 0;
+    header.importantColorCounter = 0;
+    f.write((char*)&header, sizeof(header));
+    char padding[4-(_x*3)%4];
+    for(int j=_y-1; j>=0; j--){
+        for(int i=0; i<_x; i++)
+            f << _m[i][j].b << _m[i][j].g << _m[i][j].r;
+        f.write(padding, sizeof(padding));
+    }
+    return true;
+}
+
+bool Image::loadFromPBM(std::string fileName){
     int x=0, y=0;
     int tipo;
-    std::ifstream f(archivo,std::ios::binary);
+    std::ifstream f(fileName,std::ios::binary);
     if(!f) return false;
 
     std::string t;
@@ -134,9 +240,9 @@ bool Image::loadFromPBM(std::string archivo){
     return true;
 }
 
-bool Image::saveToPBM(std::string archivo) const {
+bool Image::saveToPBM(std::string fileName) const {
     if(!isValid()) return false;
-    std::ofstream f(archivo,std::ios::trunc|std::ios::binary);
+    std::ofstream f(fileName,std::ios::trunc|std::ios::binary);
     if(!f) return false;
     char del = 0x0A;
     f << "P6";
@@ -355,6 +461,69 @@ Image& Image::bloom(int range){
         }
     destroy(_m,_x,_y);
     _m=t;
+    return *this;
+}
+
+Image& Image::modifyLight(short increment){
+    for(int i=0; i<_x; i++)
+        for(int j=0; j<_y; j++){
+            if(_m[i][j].r+increment>=255)
+                _m[i][j].r=255;
+            else if(_m[i][j].r+increment<=0)
+                _m[i][j].r=0;
+            else _m[i][j].r+=increment;
+
+            if(_m[i][j].g+increment>=255)
+                _m[i][j].g=255;
+            else if(_m[i][j].g+increment<=0)
+                _m[i][j].g=0;
+            else _m[i][j].g+=increment;
+
+            if(_m[i][j].b+increment>=255)
+                _m[i][j].b=255;
+            else if(_m[i][j].b+increment<=0)
+                _m[i][j].b=0;
+            else _m[i][j].b+=increment;
+        }
+    return *this;
+}
+
+Image& Image:: cartoonize(unsigned char level, unsigned char tolerance){
+    sf::Color **post, **t;
+    fill(post,_x,_y);
+    posterize(level);
+    for(int i=0; i<_x; i++)
+        for(int j=0; j<_y; j++)
+            post[i][j] = _m[i][j];
+    charcoal(tolerance);
+    t = _m;
+    _m = post;
+    post = t;
+    for(int i=0; i<_x; i++)
+        for(int j=0; j<_y; j++)
+            if(post[i][j]==sf::Color::Black)
+                _m[i][j] = sf::Color::Black;
+    destroy(post,_x,_y);
+    return *this;
+}
+
+// MAY BE DELETED
+Image& Image:: cartoon(unsigned char level, unsigned char tolerance){
+    sf::Color **post, **t;
+    fill(post,_x,_y);
+    posterize(level);
+    for(int i=0; i<_x; i++)
+        for(int j=0; j<_y; j++)
+            post[i][j] = _m[i][j];
+    charcoal(tolerance);
+    t = _m;
+    _m = post;
+    post = t;
+    for(int i=0; i<_x; i++)
+        for(int j=0; j<_y; j++)
+            if(post[i][j]!=sf::Color::Black)
+                _m[i][j] = sf::Color::Black;
+    destroy(post,_x,_y);
     return *this;
 }
 

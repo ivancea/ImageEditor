@@ -4,6 +4,25 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 
+struct BMPHeader{
+    int8_t   fileType[2];
+    uint32_t fileSize;
+    uint16_t reserved1,
+             reserved2;
+    uint32_t imageDataStart,
+             headerSize,
+             width,
+             height;
+    uint16_t plainCount,
+             bitsPerPixel;
+    uint32_t compression,
+             imageSize,
+             horizontalResolution,
+             verticalResolution,
+             colorTableSize,
+             importantColorCounter;
+} __attribute__ ((__packed__));
+
 class Image : public sf::Drawable{
     sf::Color **_m;
     int _x, _y;
@@ -37,8 +56,11 @@ public:
 
     /// IMPORT AND EXPORT
 
-    bool loadFromPBM(std::string archivo);
-    bool saveToPBM(std::string archivo) const;
+    bool loadFromBMP(std::string fileName);
+    bool saveToBMP(std::string fileName) const;
+
+    bool loadFromPBM(std::string fileName);
+    bool saveToPBM(std::string fileName) const;
 
 
     /// IMAGE MANAGING
@@ -46,6 +68,8 @@ public:
     void create(int x, int y, sf::Color p = sf::Color::Black);
     bool paste(const Image& img, int destOffsetX, int destOffsetY, int srcOffsetX=0, int srcOffsetY=0, int width=0, int height=0);
     Image copy(int offsetX=0, int offsetY=0, int width=0, int height=0) const;
+    int compareTo(const Image& img) const;
+    Image compareToMask(const Image& img, sf::Color equal = sf::Color::White, sf::Color different = sf::Color::Black) const;
 
     /// EFFECTS
 
@@ -60,7 +84,11 @@ public:
     Image& replaceColor(sf::Color toSearch, unsigned char tolerance, sf::Color newColor);
     Image& craze();
     Image& bloom(int range);
+    Image& modifyLight(short increment);
+    Image& cartoonize(unsigned char level=2, unsigned char tolerance=10);
 
+    // MAY BE DELETED
+    Image& cartoon(unsigned char level=2, unsigned char tolerance=10);
 
     /// HIERARCHY OVERRIDES
 
