@@ -15,6 +15,10 @@ class Image : public sf::Drawable{
 
 public:
     Image();
+    Image(const Image& img);
+
+
+    /// GETTERS AND SETTERS
 
     int getX() const { return _x; }
     int getY() const { return _y; }
@@ -30,9 +34,20 @@ public:
         _m[x][y] = color;
     }
 
-    void create(int x, int y, sf::Color p = sf::Color::Black);
+
+    /// IMPORT AND EXPORT
+
     bool loadFromPBM(std::string archivo);
     bool saveToPBM(std::string archivo) const;
+
+
+    /// IMAGE MANAGING
+
+    void create(int x, int y, sf::Color p = sf::Color::Black);
+    bool paste(const Image& img, int destOffsetX, int destOffsetY, int srcOffsetX=0, int srcOffsetY=0, int width=0, int height=0);
+    Image copy(int offsetX=0, int offsetY=0, int width=0, int height=0) const;
+
+    /// EFFECTS
 
     Image& charcoal(unsigned char tolerance=255);
     Image& grayscale();
@@ -45,6 +60,9 @@ public:
     Image& replaceColor(sf::Color toSearch, unsigned char tolerance, sf::Color newColor);
     Image& craze();
     Image& bloom(int range);
+
+
+    /// HIERARCHY OVERRIDES
 
     virtual void draw(sf::RenderTarget& rt, sf::RenderStates rs) const;
 };

@@ -1,13 +1,33 @@
 # depslib dependency file v1.0
-1453476147 source:c:\users\ivancea\desktop\imageeditor\image.cpp
+1453596085 source:c:\users\ivancea\desktop\imageeditor\image.cpp
 	"Image.h"
 	<fstream>
+	<cmath>
 
-1453464522 c:\users\ivancea\desktop\imageeditor\image.h
+1453596043 c:\users\ivancea\desktop\imageeditor\image.h
 	<string>
 	<SFML/Graphics.hpp>
 
-1453476196 source:c:\users\ivancea\desktop\imageeditor\main.cpp
+1453596239 source:c:\users\ivancea\desktop\imageeditor\main.cpp
+	<iostream>
+	<map>
+	<fstream>
+	<cmath>
+	<ctime>
+	<SFML/Graphics.hpp>
+	<SFML/OpenGL.hpp>
+	"Image.h"
+
+1453597762 source:c:\users\ivancea\desktop\github\imageeditor\image.cpp
+	"Image.h"
+	<fstream>
+	<cmath>
+
+1453596437 c:\users\ivancea\desktop\github\imageeditor\image.h
+	<string>
+	<SFML/Graphics.hpp>
+
+1453596427 source:c:\users\ivancea\desktop\github\imageeditor\main.cpp
 	<iostream>
 	<map>
 	<fstream>

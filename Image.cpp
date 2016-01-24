@@ -1,10 +1,22 @@
 #include "Image.h"
 
 #include <fstream>
+#include <cmath>
 
 Image::Image():_m(nullptr),_x(0),_y(0){}
 
 Image::Image(sf::Color **m, int x, int y):_m(m),_x(x),_y(y){}
+
+Image::Image(const Image& img){
+    _x = img.getX();
+    _y = img.getY();
+    if(_x>0 && _y>0){
+        fill(_m, _x,_y);
+        for(int i=0; i<_x; i++)
+            for(int j=0; j<_y; j++)
+                _m[i][j] = img.get(i,j);
+    }
+}
 
 void Image::fill(sf::Color**& arr, int x, int y){
     if(x==0 || y==0){
@@ -34,6 +46,61 @@ void Image::create(int x, int y, sf::Color p){
             _m[i][j] = p;
     _x=x;
     _y=y;
+}
+
+// TODO: Fix bugs (srcOffset can overflow on Image::get)
+bool Image::paste(const Image& img, int destOffsetX, int destOffsetY, int srcOffsetX, int srcOffsetY, int width, int height){
+    if(!this->isValid() || !img.isValid()
+    || destOffsetX>=_x || destOffsetY>=_y
+    || srcOffsetX>=img.getX() || srcOffsetY>=img.getY())
+        return false;
+    if(width<=0 || width+srcOffsetX>=img.getX() || width+destOffsetX>=_x)
+        width = std::min(img.getX()-srcOffsetX, _x-destOffsetX);
+    if(height<=0 || height+srcOffsetY>=img.getY() || height+destOffsetY>=_y)
+        height = std::min(img.getY()-srcOffsetY, _y-destOffsetY);
+
+    if(destOffsetX+width<=0 || destOffsetY+height<=0)
+        return false;
+
+    if(destOffsetX<0){
+        width += destOffsetX;
+        destOffsetX = 0;
+    }
+    if(destOffsetY<0){
+        height += destOffsetY;
+        destOffsetY = 0;
+    }
+
+    for(int i=0; i<width; i++)
+        for(int j=0; j<height; j++)
+            _m[destOffsetX+i][destOffsetY+j] = img.get(srcOffsetX+i, srcOffsetY+j);
+    return true;
+}
+
+Image Image::copy(int offsetX, int offsetY, int width, int height) const{
+    if(offsetX>=_x ||offsetY>=_y
+    || offsetX+width<=0 || offsetY+height<=0)
+        return Image();
+    if(width<=0 || width+offsetX>_x)
+        width = _x-offsetX;
+    if(height<=0 || height+offsetY>_y)
+        height = _y-offsetY;
+
+    if(offsetX<0){
+        width += offsetX;
+        offsetX = 0;
+    }
+    if(offsetY<0){
+        height += offsetY;
+        offsetY = 0;
+    }
+
+    Image temp;
+    temp.create(width, height);
+    for(int i=0; i<width; i++)
+        for(int j=0; j<height; j++)
+            temp.set(i,j, _m[offsetX+i][offsetY+j]);
+    return temp;
 }
 
 bool Image::loadFromPBM(std::string archivo){

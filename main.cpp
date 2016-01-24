@@ -460,19 +460,28 @@ private:
 };
 
 
-int main () {
+int main (int argc, char** argv) {
     srand(time(0));
     bool running = true;
+    Image img;
     string fileName = "tigre.pbm";
-    string t;
-    cout << "Insert fileName (nothing for default \"" + fileName + "\"): ";
-    getline(cin, t);
-    if(t.size()>0){
-        if(t.size()>=4 && t.substr(t.size()-4)!=".pbm")
-            t += ".pbm";
-        fileName = t;
+    if(argc==2){
+        fileName = argv[1];
+    }else{
+        string t;
+        cout << "Insert fileName (insert nothing for default \"" + fileName + "\"): ";
+        getline(cin, t);
+        if(t.size()>0){
+            if(t.size()>=4 && t.substr(t.size()-4)!=".pbm")
+                t += ".pbm";
+            fileName = t;
+        }
+        fileName = "images/" + fileName;
     }
-    fileName = "images/" + fileName;
+    if(!img.loadFromPBM(fileName)){
+        cout << "Couldn't load file..." << endl;
+        return 1;
+    }
 
     map<sf::Keyboard::Key, void(*)(Image&)> keyBindings = {
         {sf::Keyboard::Q, [](Image& image){image.posterize(1);}},
@@ -484,13 +493,6 @@ int main () {
         {sf::Keyboard::S, [](Image& image){image.grayscale();}},
         {sf::Keyboard::D, [](Image& image){image.invert();}}
     };
-
-    Image img;
-    img.loadFromPBM(fileName);
-    if(!img.loadFromPBM(fileName)){
-        cout << "Couldn't open file..." << endl;
-        return 1;
-    }
 
     cout << "SPACE for save.\nENTER for reopen image.\nQ,W,E,R,T,A,S and D for apply effects." << endl;
 
