@@ -77,7 +77,10 @@ int main (int argc, char** argv) {
                         cout << "Exported to \"resultado.pbm\"." << endl;
                     break;
                 case sf::Keyboard::Return:
-                    img.loadFromPBM(fileName);
+                    if((fileName.substr(fileName.size()-4,4)==".pbm" && !img.loadFromPBM(fileName))
+                    || (fileName.substr(fileName.size()-4,4)==".bmp" && !img.loadFromBMP(fileName))){
+                        cout << "Couldn't reload file..." << endl;
+                    }
                     break;
                 case sf::Keyboard::Escape:
                     running = false;

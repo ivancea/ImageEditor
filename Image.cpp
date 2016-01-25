@@ -160,18 +160,20 @@ bool Image::loadFromBMP(std::string fileName){
     _x = header.width;
     _y = header.height;
 
-    int padding = 4-(_x*3)%4;
+    int padding = (-_x)&3; //((_x*3)%4==0? (_x*3)%4 : 4-(_x*3)%4 );
     char *buff = new char[_x*_y*3+padding*_y];
     f.read(buff, _x*_y*3+padding*_y);
     fill(_m, _x,_y);
 
-    for(int i=0; i<_x; i++){
-        for(int j=0; j<_y; j++){
-            char* t = buff + i*3 + padding*(_y-j-1) + (_y-j-1)*_x*3;
+    char *t = buff;
+    for(int j=_y-1; j>=0; j--){
+        for(int i=0; i<_x; i++){
             _m[i][j].r = t[2];
             _m[i][j].g = t[1];
             _m[i][j].b = t[0];
+            t += 3;
         }
+        t += padding;
     }
     delete[] buff;
     return true;
@@ -200,7 +202,7 @@ bool Image::saveToBMP(std::string fileName) const{
     header.colorTableSize = 0;
     header.importantColorCounter = 0;
     f.write((char*)&header, sizeof(header));
-    char padding[4-(_x*3)%4];
+    char padding[(-_x)&3];
     for(int j=_y-1; j>=0; j--){
         for(int i=0; i<_x; i++)
             f << _m[i][j].b << _m[i][j].g << _m[i][j].r;

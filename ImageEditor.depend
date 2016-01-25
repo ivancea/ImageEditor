@@ -38,3 +38,23 @@
 	<SFML/OpenGL.hpp>
 	"Image.h"
 
+1453726031 source:c:\documents and settings\javier\escritorio\imageeditor\main.cpp
+	<iostream>
+	<map>
+	<fstream>
+	<cmath>
+	<ctime>
+	<SFML/Graphics.hpp>
+	<SFML/OpenGL.hpp>
+	"Image.h"
+
+1453725573 c:\documents and settings\javier\escritorio\imageeditor\image.h
+	<string>
+	<SFML/Graphics.hpp>
+
+1453725928 source:c:\documents and settings\javier\escritorio\imageeditor\image.cpp
+	"Image.h"
+	<iostream>
+	<fstream>
+	<cmath>
+
