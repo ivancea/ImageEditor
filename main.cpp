@@ -1,107 +1,240 @@
 #include <iostream>
 #include <map>
+#include <vector>
 #include <fstream>
+#include <mutex>
 #include <cmath>
-#include <ctime>
+#include <thread>
+#include <chrono>
 #include <SFML/Graphics.hpp>
-#include <SFML/OpenGL.hpp>
 
 #include "Image.h"
+#include "MutexedImage.h"
+#include "ImageWindow.h"
 
 using namespace std;
 
+/// GLOBALS
+
+map<string,MutexedImage*> images;
+map<string,ImageWindow*> windows;
+
+mutex globalMutex;
+
+bool running = true;
+
+string bindedImage,
+       bindedWindow;
+
+/// END GLOBALS
+
+std::vector<std::string> split(std::string inicial, char busqueda = ' ', int maxc = -1){
+    std::vector<std::string> temp;
+    if(maxc==-1) maxc=inicial.size();
+    if(inicial==""||maxc<2){
+        temp.push_back(inicial);
+        return temp;
+    }
+    for(int i=0; i<inicial.size()&&temp.size()<maxc-1;)
+        if(inicial[i]==busqueda){
+            if(i)
+                temp.push_back(inicial.substr(0,i));
+            inicial.erase(0, i+1);
+            i=0;
+        }else ++i;
+    temp.push_back(inicial);
+    for(int i=0; i<temp.size(); i++)
+        if(temp[i]=="") temp.erase(temp.begin()+i);
+    return temp;
+}
+
+void threadWindows(){
+    while(running){
+        globalMutex.lock();
+        auto it = windows.begin();
+        while(it!=windows.end()){
+            if(it->second->loop(images)){
+                delete it->second;
+                it = windows.erase(it);
+            }else it++;
+        }
+        globalMutex.unlock();
+        this_thread::sleep_for(chrono::milliseconds(100));
+    }
+}
+
+map<string,string> help = {
+    {"help","Usage: help <command>"},
+    {"exit","Usage: exit"},
+    {"open","Usage: open <fileName>.(pbm|bmp)"},
+    {"create","Usage: create (image|window) <varName>"},
+    {"destroy","Usage: destroy (image|window) <varName>"},
+    {"bind","Usage: bind (image|window) <varName>"},
+    {"show","Usage: show (images|windows)"},
+    {"join","Joins binded image and window"}
+};
+
+bool interpret(string cmd, vector<string> args){
+    if(cmd == "help"){
+        if(args.size()==0){
+            cout << "Current commands:" << endl;
+            for(auto it:help)
+                cout << " -" << it.first << endl;
+        }else if(args.size()==1){
+            auto it = help.find(args[0]);
+            if(it!=help.end())
+                cout << it->second << endl;
+            else
+                cout << "Unknown command" << endl;
+        }else{
+            cout << help[cmd] << endl;
+        }
+    }else if(cmd == "exit"){
+        running = false;
+    }else if(cmd == "show"){
+        if(args.size()!=1){
+            cout << help[cmd] << endl;
+        }else{
+            if(args[0]=="windows"){
+                cout << "Windows(Image): " << windows.size() << endl;
+                for(auto it:windows)
+                    cout << " -" << it.first << "(" << it.second->getImageName() << ")" << endl;
+            }else if(args[0]=="images"){
+                cout << "Images: " << images.size() << endl;
+                for(auto it:images)
+                    cout << " -" << it.first << endl;
+            }else{
+                cout << help[cmd] << endl;
+            }
+        }
+    }else if(cmd == "open"){
+        if(args.size()!=1 || args[0].size()<4){
+            cout << help[cmd] << endl;
+        }else{
+            if(bindedImage==""){
+                cout << "Not image binded" << endl;
+            }else if((args[0].substr(args[0].size()-4,4)==".pbm" && !images[bindedImage]->call<bool>([](Image*& image, void* data)->bool{return image->loadFromPBM(*(string*)data);}, &args[0]))
+            || (args[0].substr(args[0].size()-4,4)==".bmp" && !images[bindedImage]->call<bool>([](Image*& image, void* data)->bool{return image->loadFromBMP(*(string*)data);}, &args[0]))){
+                cout << "Couldn't open file..." << endl;
+            }
+        }
+    }else if(cmd == "bind"){
+        if(args.size()!=2){
+            cout << help[cmd] << endl;
+        }else{
+            if(args[0]=="window"){
+                if(windows.find(args[1])!=windows.end())
+                    bindedWindow = args[1];
+                else
+                    cout << "Inexistent window" << endl;
+            }else if(args[0]=="image"){
+                if(images.find(args[1])!=images.end())
+                    bindedImage = args[1];
+                else
+                    cout << "Inexistent image" << endl;
+            }else{
+                cout << help[cmd] << endl;
+            }
+        }
+    }else if(cmd == "create"){
+        if(args.size()!=2){
+            cout << help[cmd] << endl;
+        }else{
+            if(args[0]=="window"){
+                if(windows.find(args[1])==windows.end()){
+                    windows[args[1]] = new ImageWindow();
+                }else
+                    cout << "Existent window" << endl;
+            }else if(args[0]=="image"){
+                if(images.find(args[1])==images.end()){
+                    images[args[1]] = new MutexedImage(new Image(), true);
+                }else
+                    cout << "Existent image" << endl;
+            }else{
+                cout << help[cmd] << endl;
+            }
+        }
+    }else if(cmd == "destroy"){
+        if(args.size()!=2){
+            cout << help[cmd] << endl;
+        }else{
+            if(args[0]=="window"){
+                auto it = windows.find(args[1]);
+                if(it!=windows.end()){
+                    lock_guard<mutex> _l(globalMutex);
+                    delete it->second;
+                    windows.erase(it);
+                    bindedWindow = "";
+                }else
+                    cout << "Inexistent window" << endl;
+            }else if(args[0]=="image"){
+                auto it = images.find(args[1]);
+                if(it==images.end()){
+                    lock_guard<mutex> _l(globalMutex);
+                    it->second->setDeleteOnDestroy(true);
+                    delete it->second;
+                    images.erase(it);
+                    cout << "Windows unjoined:";
+                    for(auto p : windows){
+                        if(p.second->getImageName()==args[1]){
+                            cout << " " << p.first;
+                            p.second->setImageName("");
+                        }
+                    }
+                    cout << endl;
+                    bindedImage = "";
+                }else
+                    cout << "Inexistent image" << endl;
+            }else{
+                cout << help[cmd] << endl;
+            }
+        }
+    }else if(cmd == "join"){
+        if(args.size()!=0){
+            cout << help[cmd] << endl;
+        }else{
+            if(bindedImage==""){
+                cout << "Not image binded" << endl;
+            }else if(bindedWindow==""){
+                cout << "Not window binded" << endl;
+            }else{
+                windows[bindedWindow]->setImageName(bindedImage);
+            }
+        }
+    }else{
+        cout << "Unknown command. Type 'help' for see commands." << endl;
+    }
+    return false;
+}
+
 int main (int argc, char** argv) {
     srand(time(0));
-    bool running = true;
-    Image img;
     string fileName = "tigre.bmp";
     if(argc==2){
         fileName = argv[1];
-    }else{
-        string t;
-        cout << "Insert fileName (default .bmp)(insert nothing for default \"" + fileName + "\"): ";
-        getline(cin, t);
-        if(t.size()>0){
-            if(t.size()<4 || (t.substr(t.size()-4,4)!=".pbm" && t.substr(t.size()-4,4)!=".bmp"))
-                t += ".bmp";
-            fileName = t;
-        }
-        fileName = "images/" + fileName;
-    }
 
-    if((fileName.substr(fileName.size()-4,4)==".pbm" && !img.loadFromPBM(fileName))
-    || (fileName.substr(fileName.size()-4,4)==".bmp" && !img.loadFromBMP(fileName))){
-        cout << "Couldn't load file..." << endl;
-        return 1;
+        interpret("create",{"window","baseW"});
+        interpret("create",{"image","baseI"});
+        interpret("bind",{"window","baseW"});
+        interpret("bind",{"image","baseI"});
+        interpret("open",{fileName});
+        interpret("join",{});
     }
-
-    map<sf::Keyboard::Key, void(*)(Image&)> keyBindings = {
-        {sf::Keyboard::Q, [](Image& image){image.posterize(2);}},
-        {sf::Keyboard::W, [](Image& image){image.blur(2);}},
-        {sf::Keyboard::E, [](Image& image){image.bloom(5);}},
-        {sf::Keyboard::R, [](Image& image){image.charcoal(20);}},
-        {sf::Keyboard::T, [](Image& image){image.craze();}},
-        {sf::Keyboard::A, [](Image& image){image.blackAndWhite();}},
-        {sf::Keyboard::S, [](Image& image){image.grayscale();}},
-        {sf::Keyboard::D, [](Image& image){image.invert();}},
-        {sf::Keyboard::F, [](Image& image){image.modifyLight(2);}},
-        {sf::Keyboard::G, [](Image& image){image.modifyLight(-2);}},
-        {sf::Keyboard::Z, [](Image& image){image.cartoonize(2);}}
-    };
 
     cout << "SPACE for save.\nENTER for reopen image.\nQ,W,E,R,T,A,S and D for apply effects." << endl;
 
-    sf::Vector2i mouse;
-    sf::RenderWindow window;
-    window.create(sf::VideoMode(img.getX(), img.getY()), "ImagesEditor");
-    window.setFramerateLimit(10);
+    thread th(&threadWindows);
 
-    sf::Event ev;
     while(running){
-        while(running && window.pollEvent(ev)){
-            switch(ev.type){
-            case sf::Event::MouseMoved:
-                mouse.x = ev.mouseMove.x;
-                mouse.y = ev.mouseMove.y;
-                break;
-            case sf::Event::MouseButtonPressed:
-                SetFocus(window.getSystemHandle());
-                break;
-            case sf::Event::Closed:
-                running = false;
-                break;
-            case sf::Event::KeyPressed:
-                switch(ev.key.code){
-                case sf::Keyboard::Space:
-                    if(img.saveToPBM("resultado.pbm"))
-                        cout << "Exported to \"resultado.pbm\"." << endl;
-                    break;
-                case sf::Keyboard::Return:
-                    if((fileName.substr(fileName.size()-4,4)==".pbm" && !img.loadFromPBM(fileName))
-                    || (fileName.substr(fileName.size()-4,4)==".bmp" && !img.loadFromBMP(fileName))){
-                        cout << "Couldn't reload file..." << endl;
-                    }
-                    break;
-                case sf::Keyboard::Escape:
-                    running = false;
-                    break;
-                default:
-                    auto it = keyBindings.find(ev.key.code);
-                    if(it!=keyBindings.end()){
-                        it->second(img);
-                    }
-                    break;
-                }
-                break;
-            default:
-                break;
-            }
+        string t;
+        cout << "Img("<<bindedImage<<"),Wnd("<<bindedWindow<<"): ";
+        getline(cin, t);
+        vector<string> v = split(t);
+        if(v.size()>0){
+            string cmd = v[0];
+            v.erase(v.begin());
+            interpret(cmd, v);
         }
-        window.clear();
-
-        window.draw(img);
-
-        window.display();
     }
 
     return 0;

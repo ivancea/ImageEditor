@@ -38,23 +38,41 @@
 	<SFML/OpenGL.hpp>
 	"Image.h"
 
-1453726031 source:c:\documents and settings\javier\escritorio\imageeditor\main.cpp
+1453901595 source:c:\documents and settings\javier\escritorio\imageeditor\main.cpp
 	<iostream>
 	<map>
+	<vector>
 	<fstream>
 	<cmath>
-	<ctime>
+	<thread>
+	<chrono>
 	<SFML/Graphics.hpp>
-	<SFML/OpenGL.hpp>
 	"Image.h"
+	"MutexedImage.h"
+	"ImageWindow.h"
 
-1453725573 c:\documents and settings\javier\escritorio\imageeditor\image.h
+1453826988 c:\documents and settings\javier\escritorio\imageeditor\image.h
 	<string>
 	<SFML/Graphics.hpp>
 
-1453725928 source:c:\documents and settings\javier\escritorio\imageeditor\image.cpp
+1453887777 source:c:\documents and settings\javier\escritorio\imageeditor\image.cpp
 	"Image.h"
 	<iostream>
 	<fstream>
 	<cmath>
+
+1453901920 source:c:\documents and settings\javier\escritorio\imageeditor\imagewindow.cpp
+	"ImageWindow.h"
+	<windows.h>
+
+1453901784 c:\documents and settings\javier\escritorio\imageeditor\imagewindow.h
+	<map>
+	<SFML/Graphics.hpp>
+	"MutexedImage.h"
+
+1453885387 c:\documents and settings\javier\escritorio\imageeditor\mutexedimage.h
+	<functional>
+	<mutex>
+	<SFML/Graphics.hpp>
+	"Image.h"
 

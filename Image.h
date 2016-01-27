@@ -24,6 +24,7 @@ struct BMPHeader{
 } __attribute__ ((__packed__));
 
 class Image : public sf::Drawable{
+
     sf::Color **_m;
     int _x, _y;
 
@@ -39,7 +40,7 @@ public:
 
     /// GETTERS AND SETTERS
 
-    int getX() const { return _x; }
+    int getX() const { return _x;}
     int getY() const { return _y; }
     bool isValid() const { return _x>0 && _y>0 && _m!=nullptr; }
     sf::Color get(int x, int y) const {

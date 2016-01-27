@@ -28,6 +28,9 @@
 		</Compiler>
 		<Unit filename="Image.cpp" />
 		<Unit filename="Image.h" />
+		<Unit filename="ImageWindow.cpp" />
+		<Unit filename="ImageWindow.h" />
+		<Unit filename="MutexedImage.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />
