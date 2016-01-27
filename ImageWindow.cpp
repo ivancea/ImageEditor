@@ -27,8 +27,11 @@ MutexedImage* ImageWindow::prepareWindow(std::map<std::string,MutexedImage*>& im
         img = it->second;
         sf::Vector2u size(img->getX(),img->getY());
         if(size.x<=0 || size.y<=0){
+            if(_window.isOpen())
+                _window.close();
             img = nullptr;
-        }else if(_window.getSize().x != size.x
+        }else if(!_window.isOpen()
+        || _window.getSize().x != size.x
         || _window.getSize().y != size.y){
             if(_window.isOpen())
                 _window.close();

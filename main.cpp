@@ -71,7 +71,8 @@ map<string,string> help = {
     {"destroy","Usage: destroy (image|window) <varName>"},
     {"bind","Usage: bind (image|window) <varName>"},
     {"show","Usage: show (images|windows)"},
-    {"join","Joins binded image and window"}
+    {"join","Joins binded image and window"},
+    {"unjoin","Unjoins binded window"}
 };
 
 bool interpret(string cmd, vector<string> args){
@@ -208,7 +209,23 @@ bool interpret(string cmd, vector<string> args){
             }else if(bindedWindow==""){
                 cout << "Not window binded" << endl;
             }else{
+                lock_guard<mutex> _l(globalMutex);
                 windows[bindedWindow]->setImageName(bindedImage);
+            }
+        }
+    }else if(cmd == "unjoin"){
+        if(args.size()!=0){
+            cout << help[cmd] << endl;
+        }else{
+            if(bindedWindow==""){
+                cout << "Not window binded" << endl;
+            }else{
+                lock_guard<mutex> _l(globalMutex);
+                ImageWindow* w = windows[bindedWindow];
+                if(w->getImageName()=="")
+                    cout << "Window not joined" << endl;
+                else
+                    w->setImageName("");
             }
         }
     }else{
@@ -241,7 +258,7 @@ int main (int argc, char** argv) {
         auto it = windows.find(bindedWindow);
         if(it != windows.end())
             joinedImage = it->second->getImageName();
-        cout << "Img("<<bindedImage<<"),Wnd("<<bindedWindow<<"): ";
+        cout << "[Img("<<bindedImage<<"),Wnd("<<bindedWindow<<")] >> ";
         getline(cin, t);
         vector<string> v = split(t);
         if(v.size()>0){
