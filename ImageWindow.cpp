@@ -32,11 +32,10 @@ MutexedImage* ImageWindow::prepareWindow(std::map<std::string,MutexedImage*>& im
         || _window.getSize().y != size.y){
             if(_window.isOpen())
                 _window.close();
-            _window.create(sf::VideoMode(size.x,size.y), "Image: " + _imageName);
+            _window.create(sf::VideoMode(size.x,size.y), ("Image: " + _imageName).c_str());
             _window.setFramerateLimit(10);
         }
     }else{
-        _imageName.clear();
         _window.close();
         _mouse.x = _mouse.y = 0;
     }

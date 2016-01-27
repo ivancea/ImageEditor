@@ -18,25 +18,28 @@
 	<SFML/OpenGL.hpp>
 	"Image.h"
 
-1453662034 source:c:\users\ivancea\desktop\github\imageeditor\image.cpp
+1453907029 source:c:\users\ivancea\desktop\github\imageeditor\image.cpp
 	"Image.h"
 	<iostream>
 	<fstream>
 	<cmath>
 
-1453657961 c:\users\ivancea\desktop\github\imageeditor\image.h
+1453907029 c:\users\ivancea\desktop\github\imageeditor\image.h
 	<string>
 	<SFML/Graphics.hpp>
 
-1453661176 source:c:\users\ivancea\desktop\github\imageeditor\main.cpp
+1453909909 source:c:\users\ivancea\desktop\github\imageeditor\main.cpp
 	<iostream>
 	<map>
+	<vector>
 	<fstream>
+	<mutex>
 	<cmath>
-	<ctime>
-	<SFML/Graphics.hpp>
-	<SFML/OpenGL.hpp>
+	<thread>
+	<chrono>
 	"Image.h"
+	"MutexedImage.h"
+	"ImageWindow.h"
 
 1453901595 source:c:\documents and settings\javier\escritorio\imageeditor\main.cpp
 	<iostream>
@@ -75,4 +78,19 @@
 	<mutex>
 	<SFML/Graphics.hpp>
 	"Image.h"
+
+1453907027 c:\users\ivancea\desktop\github\imageeditor\mutexedimage.h
+	<functional>
+	<mutex>
+	<SFML/Graphics.hpp>
+	"Image.h"
+
+1453909895 c:\users\ivancea\desktop\github\imageeditor\imagewindow.h
+	<map>
+	<SFML/Graphics.hpp>
+	"MutexedImage.h"
+
+1453907177 source:c:\users\ivancea\desktop\github\imageeditor\imagewindow.cpp
+	"ImageWindow.h"
+	<windows.h>
 

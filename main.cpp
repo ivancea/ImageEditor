@@ -6,7 +6,6 @@
 #include <cmath>
 #include <thread>
 #include <chrono>
-#include <SFML/Graphics.hpp>
 
 #include "Image.h"
 #include "MutexedImage.h"
@@ -59,7 +58,7 @@ void threadWindows(){
             }else it++;
         }
         globalMutex.unlock();
-        this_thread::sleep_for(chrono::milliseconds(100));
+        this_thread::sleep_for(chrono::milliseconds(50));
     }
 }
 
@@ -169,7 +168,7 @@ bool interpret(string cmd, vector<string> args){
                     cout << "Inexistent window" << endl;
             }else if(args[0]=="image"){
                 auto it = images.find(args[1]);
-                if(it==images.end()){
+                if(it!=images.end()){
                     lock_guard<mutex> _l(globalMutex);
                     it->second->setDeleteOnDestroy(true);
                     delete it->second;
@@ -227,6 +226,10 @@ int main (int argc, char** argv) {
 
     while(running){
         string t;
+        string joinedImage;
+        auto it = windows.find(bindedWindow);
+        if(it != windows.end())
+            joinedImage = it->second->getImageName();
         cout << "Img("<<bindedImage<<"),Wnd("<<bindedWindow<<"): ";
         getline(cin, t);
         vector<string> v = split(t);
@@ -236,6 +239,9 @@ int main (int argc, char** argv) {
             interpret(cmd, v);
         }
     }
+
+    if(th.joinable())
+        th.join();
 
     return 0;
 }

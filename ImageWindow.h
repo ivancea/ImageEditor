@@ -18,11 +18,13 @@ public:
     ImageWindow(){}
     ImageWindow(std::string imageName);
     ImageWindow(const ImageWindow&) = delete;
+    ~ImageWindow(){
+        _window.setActive(false);
+    }
 
     std::string getImageName() const { return _imageName; }
     void setImageName(std::string imageName) {
         _imageName = imageName;
-        _window.setTitle("Image: " + _imageName);
     }
 
     bool loop(std::map<std::string,MutexedImage*>& images);
