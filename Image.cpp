@@ -129,6 +129,25 @@ Image Image::compareToMask(const Image& img, sf::Color equal, sf::Color differen
     return t;
 }
 
+Image& Image::scale(double scaleX, double scaleY){
+    if(scaleX <= 0 || scaleY <= 0)
+        return *this;
+    sf::Color **t;
+    int x = _x*scaleX,
+        y = _y*scaleY;
+    fill(t, x,y);
+
+    for(int i=0; i<x; i++)
+        for(int j=0; j<y; j++){
+            t[i][j] = _m[int(i/scaleX)][int(j/scaleY)];
+        }
+    destroy(_m, _x,_y);
+    _m = t;
+    _x = x;
+    _y = y;
+    return *this;
+}
+
 /// BUILD WITH "-mno-ms-bitfields" in GCC
 bool Image::loadFromBMP(std::string fileName){
     std::ifstream f(fileName,std::ios::binary);
@@ -160,7 +179,7 @@ bool Image::loadFromBMP(std::string fileName){
     _x = header.width;
     _y = header.height;
 
-    int padding = (-_x)&3; //((_x*3)%4==0? (_x*3)%4 : 4-(_x*3)%4 );
+    int padding = ((_x*3)%4==0? (_x*3)%4 : 4-(_x*3)%4 );
     char *buff = new char[_x*_y*3+padding*_y];
     f.read(buff, _x*_y*3+padding*_y);
     fill(_m, _x,_y);
