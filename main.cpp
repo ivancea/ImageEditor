@@ -66,6 +66,7 @@ map<string,string> help = {
     {"help","Usage: help <command>"},
     {"exit","Usage: exit"},
     {"open","Usage: open <fileName>.(pbm|bmp)"},
+    {"save","Usage: save <fileName>\n    *Saved as BMP*"},
     {"create","Usage: create (image|window) <varName>"},
     {"destroy","Usage: destroy (image|window) <varName>"},
     {"bind","Usage: bind (image|window) <varName>"},
@@ -115,6 +116,16 @@ bool interpret(string cmd, vector<string> args){
             }else if((args[0].substr(args[0].size()-4,4)==".pbm" && !images[bindedImage]->call<bool>([](Image*& image, void* data)->bool{return image->loadFromPBM(*(string*)data);}, &args[0]))
             || (args[0].substr(args[0].size()-4,4)==".bmp" && !images[bindedImage]->call<bool>([](Image*& image, void* data)->bool{return image->loadFromBMP(*(string*)data);}, &args[0]))){
                 cout << "Couldn't open file..." << endl;
+            }
+        }
+    }else if(cmd == "save"){
+        if(args.size()!=1 || args[0].size()<4){
+            cout << help[cmd] << endl;
+        }else{
+            if(bindedImage==""){
+                cout << "Not image binded" << endl;
+            }else if(!images[bindedImage]->call<bool>([](Image*& image, void* data)->bool{return image->saveToBMP(*(string*)data);}, &args[0])){
+                cout << "Couldn't save file..." << endl;
             }
         }
     }else if(cmd == "bind"){

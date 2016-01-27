@@ -18,7 +18,7 @@
 	<SFML/OpenGL.hpp>
 	"Image.h"
 
-1453907029 source:c:\users\ivancea\desktop\github\imageeditor\image.cpp
+1453910610 source:c:\users\ivancea\desktop\github\imageeditor\image.cpp
 	"Image.h"
 	<iostream>
 	<fstream>
@@ -28,7 +28,7 @@
 	<string>
 	<SFML/Graphics.hpp>
 
-1453909909 source:c:\users\ivancea\desktop\github\imageeditor\main.cpp
+1453910495 source:c:\users\ivancea\desktop\github\imageeditor\main.cpp
 	<iostream>
 	<map>
 	<vector>
@@ -90,7 +90,7 @@
 	<SFML/Graphics.hpp>
 	"MutexedImage.h"
 
-1453907177 source:c:\users\ivancea\desktop\github\imageeditor\imagewindow.cpp
+1453910014 source:c:\users\ivancea\desktop\github\imageeditor\imagewindow.cpp
 	"ImageWindow.h"
 	<windows.h>
 

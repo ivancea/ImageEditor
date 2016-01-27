@@ -221,7 +221,7 @@ bool Image::saveToBMP(std::string fileName) const{
     header.colorTableSize = 0;
     header.importantColorCounter = 0;
     f.write((char*)&header, sizeof(header));
-    char padding[(-_x)&3];
+    char padding[((_x*3)%4==0? (_x*3)%4 : 4-(_x*3)%4 )];
     for(int j=_y-1; j>=0; j--){
         for(int i=0; i<_x; i++)
             f << _m[i][j].b << _m[i][j].g << _m[i][j].r;
