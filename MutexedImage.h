@@ -58,6 +58,11 @@ public:
         return _img->getY();
     }
 
+    bool isValid(){
+        std::lock_guard<std::recursive_mutex> lg(_m);
+        return _img->isValid();
+    }
+
     virtual void draw(sf::RenderTarget& rt, sf::RenderStates rs) const{
         std::lock_guard<std::recursive_mutex> lg(_m);
         rt.draw(*_img);

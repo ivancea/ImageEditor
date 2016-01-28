@@ -55,6 +55,8 @@ void threadWindows(){
         auto it = windows.begin();
         while(it!=windows.end()){
             if(it->second->loop(images)){
+                if(bindedWindow == it->first)
+                    bindedWindow = "";
                 delete it->second;
                 it = windows.erase(it);
             }else it++;
@@ -73,7 +75,7 @@ map<string,string> help = {
     {"destroy","Usage: destroy (image|window) <varName>\nDestroy a variable"},
     {"copy","Usage: copy <varName>\nCopies the binded image into the variable"},
     {"bind","Usage: bind (image|window) <varName>\nBind the variable. Needed for use some commands"},
-    {"show","Usage: show (images|windows|options)\nList all the variables or options"},
+    {"show","Usage: show (images|windows|options|imageInfo)\nList all the variables, options or information about the binded image"},
     {"attach","Usage: attach\nAttaches binded image and window"},
     {"detach","Usage: detach\nDetaches binded window"},
     {"option","Usage: option (set|unset) <optionName>\nSet or unset program options\nExample: bindOnCreate"}
@@ -112,6 +114,21 @@ bool interpret(string cmd, vector<string> args){
                 cout << "Options: " << options.size() << endl;
                 for(const string& opt:options)
                     cout << " -" << opt << endl;
+            }else if(args[0]=="imageInfo"){
+                if(bindedImage==""){
+                    cout << "Not image binded" << endl;
+                }else{
+                    auto it = images[bindedImage];
+                    Image* img = it->lock();
+                    if(!img->isValid()){
+                        cout << "Uninitialized or invalid image" << endl;
+                    }else{
+                        cout << "Image information:" << endl
+                             << "-Width: " << img->getX() << endl
+                             << "-Height: " << img->getY() << endl;
+                    }
+                    it->unlock();
+                }
             }else{
                 cout << help[cmd] << endl;
             }
