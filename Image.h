@@ -37,6 +37,8 @@ public:
     Image();
     Image(const Image& img);
 
+    Image& operator=(const Image& img);
+
 
     /// GETTERS AND SETTERS
 

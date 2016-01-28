@@ -71,6 +71,7 @@ map<string,string> help = {
     {"save","Usage: save <fileName>\n    *Saved as BMP*"},
     {"create","Usage: create (image|window) <varName>"},
     {"destroy","Usage: destroy (image|window) <varName>"},
+    {"copy","Usage: copy <varName>\nCopies the binded image into the variable"},
     {"bind","Usage: bind (image|window) <varName>"},
     {"show","Usage: show (images|windows|options)"},
     {"join","Joins binded image and window"},
@@ -211,6 +212,24 @@ bool interpret(string cmd, vector<string> args){
                 cout << help[cmd] << endl;
             }
         }
+    }else if(cmd == "copy"){
+        if(args.size()!=2){
+            cout << help[cmd] << endl;
+        }else{
+            auto it = images.find(args[0]);
+            auto it2 = images.find(args[1]);
+            if(it==images.end()){
+                cout << "Inexistent image in first argument" << endl;
+            }else if(it2==images.end()){
+                cout << "Inexistent image in second argument" << endl;
+            }else{
+                Image* img = it->second->lock();
+                Image* img2 = it2->second->lock();
+                (*img2) = *img;
+                it->second->unlock();
+                it2->second->unlock();
+            }
+        }
     }else if(cmd == "join"){
         if(args.size()!=0){
             cout << help[cmd] << endl;
@@ -265,16 +284,17 @@ bool interpret(string cmd, vector<string> args){
 
 int main (int argc, char** argv) {
     srand(time(0));
-    string fileName = "tigre.bmp";
-    if(argc==2){
-        fileName = argv[1];
-
-        interpret("create",{"window","baseW"});
-        interpret("create",{"image","baseI"});
-        interpret("bind",{"window","baseW"});
-        interpret("bind",{"image","baseI"});
-        interpret("open",{fileName});
-        interpret("join",{});
+    if(argc>=2){
+        for(int i=1; i<argc; i++){
+            string windowName = "baseW"+to_string(i),
+                   imageName = "baseI"+to_string(i);
+            interpret("create",{"window",windowName});
+            interpret("create",{"image",imageName});
+            interpret("bind",{"window",windowName});
+            interpret("bind",{"image",imageName});
+            interpret("open",{argv[i]});
+            interpret("join",{});
+        }
     }
 
     cout << "SPACE for save.\nENTER for reopen image.\nQ,W,E,R,T,A,S and D for apply effects." << endl;

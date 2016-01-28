@@ -33,8 +33,9 @@ public:
         return _deleteOnDestroy;
     }
 
-    void lock(){
+    Image* lock(){
         _m.lock();
+        return _img;
     }
 
     void unlock(){

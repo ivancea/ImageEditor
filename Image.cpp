@@ -19,6 +19,19 @@ Image::Image(const Image& img){
     }
 }
 
+Image& Image::operator=(const Image& img){
+    destroy(_m, _x,_y);
+    _x = img.getX();
+    _y = img.getY();
+    std::cout << _x << " " << _y << std::endl;
+    if(_x>0 && _y>0){
+        fill(_m, _x,_y);
+        for(int i=0; i<_x; i++)
+            for(int j=0; j<_y; j++)
+                _m[i][j] = img.get(i,j);
+    }
+}
+
 void Image::fill(sf::Color**& arr, int x, int y){
     if(x==0 || y==0){
         arr=nullptr;
