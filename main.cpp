@@ -65,18 +65,18 @@ void threadWindows(){
 }
 
 map<string,string> help = {
-    {"help","Usage: help <command>"},
-    {"exit","Usage: exit"},
-    {"open","Usage: open <fileName>.(pbm|bmp)"},
-    {"save","Usage: save <fileName>\n    *Saved as BMP*"},
-    {"create","Usage: create (image|window) <varName>"},
-    {"destroy","Usage: destroy (image|window) <varName>"},
+    {"help","Usage: help <command>\nSee help about a command"},
+    {"exit","Usage: exit\nExit the program"},
+    {"open","Usage: open <fileName>.(pbm|bmp)\nLoad an image into the binded image"},
+    {"save","Usage: save <fileName>\nSave the binded image into a file"},
+    {"create","Usage: create (image|window) <varName>\nCreate a variable."},
+    {"destroy","Usage: destroy (image|window) <varName>\nDestroy a variable"},
     {"copy","Usage: copy <varName>\nCopies the binded image into the variable"},
-    {"bind","Usage: bind (image|window) <varName>"},
-    {"show","Usage: show (images|windows|options)"},
-    {"join","Joins binded image and window"},
-    {"unjoin","Unjoins binded window"},
-    {"option","Usage: option (set|unset) <optionName>\nExample: bindOnCreate"}
+    {"bind","Usage: bind (image|window) <varName>\nBind the variable. Needed for use some commands"},
+    {"show","Usage: show (images|windows|options)\nList all the variables or options"},
+    {"attach","Usage: attach\nAttaches binded image and window"},
+    {"detach","Usage: detach\nDetaches binded window"},
+    {"option","Usage: option (set|unset) <optionName>\nSet or unset program options\nExample: bindOnCreate"}
 };
 
 bool interpret(string cmd, vector<string> args){
@@ -125,6 +125,8 @@ bool interpret(string cmd, vector<string> args){
             }else if((args[0].substr(args[0].size()-4,4)==".pbm" && !images[bindedImage]->call<bool>([](Image*& image, void* data)->bool{return image->loadFromPBM(*(string*)data);}, &args[0]))
             || (args[0].substr(args[0].size()-4,4)==".bmp" && !images[bindedImage]->call<bool>([](Image*& image, void* data)->bool{return image->loadFromBMP(*(string*)data);}, &args[0]))){
                 cout << "Couldn't open file..." << endl;
+            }else{
+                cout << "Image loaded.\n-Width: " << images[bindedImage]->getX() << "\n-Height: " << images[bindedImage]->getY() << endl;
             }
         }
     }else if(cmd == "save"){
@@ -197,7 +199,7 @@ bool interpret(string cmd, vector<string> args){
                     it->second->setDeleteOnDestroy(true);
                     delete it->second;
                     images.erase(it);
-                    cout << "Windows unjoined:";
+                    cout << "Windows detached:";
                     for(auto p : windows){
                         if(p.second->getImageName()==args[1]){
                             cout << " " << p.first;
@@ -230,7 +232,7 @@ bool interpret(string cmd, vector<string> args){
                 it2->second->unlock();
             }
         }
-    }else if(cmd == "join"){
+    }else if(cmd == "attach"){
         if(args.size()!=0){
             cout << help[cmd] << endl;
         }else{
@@ -243,7 +245,7 @@ bool interpret(string cmd, vector<string> args){
                 windows[bindedWindow]->setImageName(bindedImage);
             }
         }
-    }else if(cmd == "unjoin"){
+    }else if(cmd == "detach"){
         if(args.size()!=0){
             cout << help[cmd] << endl;
         }else{
@@ -253,7 +255,7 @@ bool interpret(string cmd, vector<string> args){
                 lock_guard<mutex> _l(globalMutex);
                 ImageWindow* w = windows[bindedWindow];
                 if(w->getImageName()=="")
-                    cout << "Window not joined" << endl;
+                    cout << "Window not attached" << endl;
                 else
                     w->setImageName("");
             }
@@ -293,21 +295,24 @@ int main (int argc, char** argv) {
             interpret("bind",{"window",windowName});
             interpret("bind",{"image",imageName});
             interpret("open",{argv[i]});
-            interpret("join",{});
+            interpret("attach",{});
         }
     }
 
-    cout << "SPACE for save.\nENTER for reopen image.\nQ,W,E,R,T,A,S and D for apply effects." << endl;
+    cout << "SPACE for save.\nENTER for reopen image.\nQ,W,E,R,T,A,S,D,F,G,Z for apply effects." << endl;
 
     thread th(&threadWindows);
 
     while(running){
         string t;
-        string joinedImage;
+        string attachedImage;
         auto it = windows.find(bindedWindow);
         if(it != windows.end())
-            joinedImage = it->second->getImageName();
-        cout << "[Img("<<bindedImage<<"),Wnd("<<bindedWindow<<")] >> ";
+            attachedImage = it->second->getImageName();
+        cout << "\n[Img("<<bindedImage<<"),Wnd("<<bindedWindow;
+        if(attachedImage!="")
+            cout <<"(" + attachedImage + ")";
+        cout << ")] >> ";
         getline(cin, t);
         vector<string> v = split(t);
         if(v.size()>0){

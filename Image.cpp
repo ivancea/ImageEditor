@@ -23,7 +23,6 @@ Image& Image::operator=(const Image& img){
     destroy(_m, _x,_y);
     _x = img.getX();
     _y = img.getY();
-    std::cout << _x << " " << _y << std::endl;
     if(_x>0 && _y>0){
         fill(_m, _x,_y);
         for(int i=0; i<_x; i++)
@@ -167,7 +166,7 @@ bool Image::loadFromBMP(std::string fileName){
     if(!f) return false;
     BMPHeader header;
     f.read((char*)&header, sizeof(header));
-    std::cout << "FileType: " << header.fileType[0] << header.fileType[1] << "\n"
+    /*std::cout << "FileType: " << header.fileType[0] << header.fileType[1] << "\n"
          << "FileSize: " << header.fileSize << "\n"
          << "Reserved1: " << header.reserved1 << "\n"
          << "Reserved2: " << header.reserved2 << "\n"
@@ -182,7 +181,7 @@ bool Image::loadFromBMP(std::string fileName){
          << "HorizontalResolution: " << header.horizontalResolution << "\n"
          << "VerticalResolution: " << header.verticalResolution << "\n"
          << "ColorTableSize: " << header.colorTableSize << "\n"
-         << "ImportantColorCounter: " << header.importantColorCounter << "\n" << std::endl;
+         << "ImportantColorCounter: " << header.importantColorCounter << "\n" << std::endl;*/
     if(header.width<=0 ||header.height<=0 || header.compression!=0
     || header.fileType[0]!='B' || header.fileType[1]!='M'
     || header.bitsPerPixel!=24)

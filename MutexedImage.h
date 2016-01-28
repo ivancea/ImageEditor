@@ -8,7 +8,7 @@
 #include "Image.h"
 
 class MutexedImage : public sf::Drawable{
-    mutable std::mutex _m;
+    mutable std::recursive_mutex _m;
     Image* _img;
     bool _deleteOnDestroy;
 
@@ -44,22 +44,22 @@ public:
 
     template <class K>
     K call(std::function< K (Image*&, void*) > func, void* data = nullptr){
-        std::lock_guard<std::mutex> lg(_m);
+        std::lock_guard<std::recursive_mutex> lg(_m);
         return func(_img, data);
     }
 
     int getX(){
-        std::lock_guard<std::mutex> lg(_m);
+        std::lock_guard<std::recursive_mutex> lg(_m);
         return _img->getX();
     }
 
     int getY(){
-        std::lock_guard<std::mutex> lg(_m);
+        std::lock_guard<std::recursive_mutex> lg(_m);
         return _img->getY();
     }
 
     virtual void draw(sf::RenderTarget& rt, sf::RenderStates rs) const{
-        std::lock_guard<std::mutex> lg(_m);
+        std::lock_guard<std::recursive_mutex> lg(_m);
         rt.draw(*_img);
     }
 };
