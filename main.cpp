@@ -1,5 +1,6 @@
 #include <iostream>
 #include <map>
+#include <set>
 #include <vector>
 #include <fstream>
 #include <mutex>
@@ -17,6 +18,7 @@ using namespace std;
 
 map<string,MutexedImage*> images;
 map<string,ImageWindow*> windows;
+set<string> options;
 
 mutex globalMutex;
 
@@ -70,9 +72,10 @@ map<string,string> help = {
     {"create","Usage: create (image|window) <varName>"},
     {"destroy","Usage: destroy (image|window) <varName>"},
     {"bind","Usage: bind (image|window) <varName>"},
-    {"show","Usage: show (images|windows)"},
+    {"show","Usage: show (images|windows|options)"},
     {"join","Joins binded image and window"},
-    {"unjoin","Unjoins binded window"}
+    {"unjoin","Unjoins binded window"},
+    {"option","Usage: option (set|unset) <optionName>\nExample: bindOnCreate"}
 };
 
 bool interpret(string cmd, vector<string> args){
@@ -104,6 +107,10 @@ bool interpret(string cmd, vector<string> args){
                 cout << "Images: " << images.size() << endl;
                 for(auto it:images)
                     cout << " -" << it.first << endl;
+            }else if(args[0]=="options"){
+                cout << "Options: " << options.size() << endl;
+                for(const string& opt:options)
+                    cout << " -" << opt << endl;
             }else{
                 cout << help[cmd] << endl;
             }
@@ -154,11 +161,15 @@ bool interpret(string cmd, vector<string> args){
             if(args[0]=="window"){
                 if(windows.find(args[1])==windows.end()){
                     windows[args[1]] = new ImageWindow();
+                    if(options.find("bindOnCreate")!=options.end())
+                        bindedWindow = args[1];
                 }else
                     cout << "Existent window" << endl;
             }else if(args[0]=="image"){
                 if(images.find(args[1])==images.end()){
                     images[args[1]] = new MutexedImage(new Image(), true);
+                    if(options.find("bindOnCreate")!=options.end())
+                        bindedImage = args[1];
                 }else
                     cout << "Existent image" << endl;
             }else{
@@ -226,6 +237,24 @@ bool interpret(string cmd, vector<string> args){
                     cout << "Window not joined" << endl;
                 else
                     w->setImageName("");
+            }
+        }
+    }else if(cmd == "option"){
+        if(args.size()!=2){
+            cout << help[cmd] << endl;
+        }else{
+            if(args[0] == "set"){
+                if(options.find(args[1]) == options.end())
+                    options.insert(args[1]);
+                else
+                    cout << "Option already set" << endl;
+            }else if(args[0] == "unset"){
+                if(options.find(args[1]) == options.end())
+                    options.erase(args[1]);
+                else
+                    cout << "Inexistent option" << endl;
+            }else{
+                cout << help[cmd] << endl;
             }
         }
     }else{
