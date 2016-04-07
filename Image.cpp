@@ -295,6 +295,30 @@ bool Image::saveToPBM(std::string fileName) const {
     return true;
 }
 
+bool Image::saveToAsciiArt(std::string fileName, int pixelsX, int pixelsY) const {
+    if(!isValid()) return false;
+    std::ofstream f(fileName,std::ios::trunc);
+    if(!f) return false;
+    static const std::string chars = " -+OHM";
+    for(int j=0; j<_y/pixelsY; j++){
+        for(int i=0; i<_x/pixelsX; i++){
+            int t = 0;
+            int count = 0;
+            for(int n=0; n<pixelsX && i*pixelsX+n<_x; n++){
+                for(int m=0; m<pixelsY && j*pixelsY+m<_y; m++){
+                    count++;
+                    t += _m[i*pixelsX+n][j*pixelsY+m].r + _m[i*pixelsX+n][j*pixelsY+m].g + _m[i*pixelsX+n][j*pixelsY+m].b;
+                }
+            }
+            t /= count*3;
+            f << chars[(int)(t/255.0 * chars.size())];
+        }
+        if(j!=_y/pixelsY-1)
+            f << '\n';
+    }
+    return true;
+}
+
 Image& Image::charcoal(unsigned char tolerance){
     sf::Color **t;
     fill(t, _x, _y);
@@ -325,6 +349,7 @@ Image& Image::Image::grayscale(){
         }
     return *this;
 }
+
 Image& Image::blackAndWhite(){
     for(int i=0; i<_x; i++)
         for(int j=0; j<_y; j++){
@@ -401,6 +426,7 @@ Image& Image::minimizeColors(bool r, bool g, bool b){
         }
     return *this;
 }
+
 Image& Image::maximizeColors(bool r, bool g, bool b){
     for(int i=0; i<_x; i++)
         for(int j=0; j<_y; j++){

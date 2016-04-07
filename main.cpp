@@ -71,6 +71,7 @@ map<string,string> help = {
     {"exit","Usage: exit\nExit the program"},
     {"open","Usage: open <fileName>.(pbm|bmp)\nLoad an image into the binded image"},
     {"save","Usage: save <fileName>\nSave the binded image into a file"},
+    {"saveascii","Usage: saveascii <fileName>\nSave the binded image into an ascii art file"},
     {"create","Usage: create (image|window) <varName>\nCreate a variable.\nSet option 'bindOnCreate' for auto-binding"},
     {"destroy","Usage: destroy (image|window) <varName>\nDestroy a variable"},
     {"copy","Usage: copy <src> <dest>\nCopies src image to dest"},
@@ -153,6 +154,16 @@ bool interpret(string cmd, vector<string> args){
             if(bindedImage==""){
                 cout << "Not image binded" << endl;
             }else if(!images[bindedImage]->call<bool>([](Image*& image, void* data)->bool{return image->saveToBMP(*(string*)data);}, &args[0])){
+                cout << "Couldn't save file..." << endl;
+            }
+        }
+    }else if(cmd == "saveascii"){
+        if(args.size()!=1 || args[0].size()<4){
+            cout << help[cmd] << endl;
+        }else{
+            if(bindedImage==""){
+                cout << "Not image binded" << endl;
+            }else if(!images[bindedImage]->call<bool>([](Image*& image, void* data)->bool{return image->saveToAsciiArt(*(string*)data);}, &args[0])){
                 cout << "Couldn't save file..." << endl;
             }
         }

@@ -65,6 +65,8 @@ public:
     bool loadFromPBM(std::string fileName);
     bool saveToPBM(std::string fileName) const;
 
+    bool saveToAsciiArt(std::string fileName, int pixelsX = 4, int pixelsY = 8) const;
+
 
     /// IMAGE MANAGING
 

@@ -1,0 +1,49 @@
+-HHHOHHHHHOHHHHHOHHHHHHHOHHHHHHHHHOHHOHHHHOOHHHHOOHOOHHHHHHOOHHHHHHHHHOOOHHHHHOHOOHOOOHOOOHHOHOOHHH-
++MMO+++++++++-++-++++++++++---+++++++--++--++++++++-+++++++++++++++++++++OO++++++++++-++--+++++++OH+
++MH+-----    -     ---    -------- -         -- -+++++---++---    --   ----++++-----++  ------++-OM+
++MO+----        --++  -+++--- --   -  -           -+OHHOO+++++--   -     ----+++++--++-----------OH+
++MO---   --   ---+++HHHOO-         -- --      --     +HHHOO+O++-    -     ---++++OO++------------+H+
++MO-    --   -++OOOHHH-  ---       -- -    -   OO+-++--OHHOO+++-     --    ----+++O++------------OM+
++MH-   --   -++++OHH+ --OHH+ +--  ------   --- -HHO--O+ +HHOO+++      ---    --+++++-------------OM+
++MO-  --     +O+OHH++++OHHH --   -------    -   +HHH+-H+ +-  -++-       ---    -++++----- -------+H+
++MO- ---    -+OOOO++O+OHMMO     --+----+-----+- -HMMH-O  - --++---         --    -+--------------+H+
++MH---+-    -+-     O+OMMHO+-++-++-----+--+++++-+OHM+OO+++OHHHMHO-  -+-    -+-     -  -----------+H+
++MH+---     ----- ---O+HMHO+++++-+-+++++--++--+-+OHHHMHO------+O+-   -+-    -+     +-------------+H+
++MO+-   +-  +OMMHHOOOHHHMHOO+-++++++++++++++++-+OOHMMH-++++++   -     ++    ++-    -++-----------OM+
++MO-   -+   OH+-  -+--+OMMHO++++++++++++++--++-+OHMMH-++  -++- OH+-    ++   ++++   -+++----------+M+
++MO+   -+        ++++---+MMMO++++++++--+++++++-+OMMO  OOOOOO+-+MO --   -++  -OO+-  -+O+++--------OM+
++MH+   ++  -+H+  +OO+--+-+MMH++++++++---++++++++OH+    -+++++OH+ -++-  --+- -OOO-   +OO+++-------+H+
++MH+  -+--  -HMO--OHHOOO-  OHO+++++++---+---+++---     +OOHHO+ --+---  --+  +OOO   -+OOO++++-----+H+
++MHO  ++--    +HMOO++-      ---+++--+--+++-+++---     +MMH+-------++-  --+  +HH+   +OOHO++++----+OM+
++MHO- +-----++-  +OOHMMO     ---+---++-----------   --OHHOO+-+-+++++   +++  OHHO   +HHHHO++++++-+OM+
++MHO+ +--  ++-++++--+OMMO--  ----+++++------------  --+OOO++++++--+   OHOO- HMH+   OHHHHHO+++++++OM+
++MHHH -++  -+OOOO+-++OOO++-- -++++++++++++------+-----++O++++++++++ -OHHHH- HMM-   OHHHHHHO+++++++H+
++MHHHO +OO-  --+++++++++++----++++++++++++++--++-++--+++++++++---++ -H+OHH--HMH+   +HHMMHHHOOO+++OM+
++MOHMH -OOOO+  -++++++++++++-++-+++++++++++++++++++--+++++++---+- - ++  HH -MMH+--+OHMMHMHHHOOO++OM+
++MOHMM+ OHHOO++----+-+++++++-++++++++O+OO++O++++++++--+++++-+O+-++OH+HO-H+ +MMH--+OHHHMMHHHOOOOO+OM+
++MHHMMH -HH--- -----+O++++++++++++O++++++++++++++-++++++++++--+OOHHOHMOOH  OMH+ -OHMMMMMMHHHOHHOOOH+
++MHOHMH  +MH++OOO++O+-+++++++++++++++++++++++++++---++++++++O+--OMMHOHHHO +HH-   OHMMHMMMHHHHHHOOOM+
++MH-+HM+  OMMMMMO+O+--++++++++-+++++++++++OOO++++-----+++++++++- -OHOHHO +HO    -OHMMHHHHHHHHHHHOOM+
++MH+ +HM+- OMMHHHH--OO+++++--+++++++++++OOOOOO++++++--++++++++++++ +OO+-OH+   --+HHMMHHHHHHHHHHHOHM+
++MMO- -OHHO+HMHOHO +++++OOO-+++++OOOOO+OOOOOOOO++++O++++OO++++++++--+OHHO-+OOHHOOHHMMMMHHHHHHHHHOOH+
++MMHO-   +OHHHHO+ +++++OOOO++OOOOOOOOOOOOOOOOOOOO+OO++++OOOO+++++++-O++--++OHHHHHHMMMMMHHHHHHHHHHOM+
++MMHHH+-   -+O+O-++++++OOHO++OOOOOOOOOOOOO+OOOOOOOOO+++OOOOOO++---O+-++OHHHMMMMMMMMMMMMHHHHHHHHHHOH+
++MMHMMHHOOO+++OHOO++++OOOOO++OOOOHHHHHHHHHHHOOHHHHHO-+OO+OO+OO+--OHOHHHHMHHHHMMMMMMMMHHOHHHHMHHHHOH+
++MMHMMMMMHHOOHHHHO+-+O+OOOOOO-OHHMHHHMMMMMMHHHHHOHO--HHHOO++---OO+O+++OHHHHHMMMMMMMMMHHHHHHHHHHHHHM+
++MMHMMMMMMMMMMMMHH+--+OOO+OOHO++OHHHHHHHHHHHHHO--  +HMH+-+-++OHHO+++++OOHHHHMMMMMMMMHHHOOOHHHHHHOHM+
++MMMMMMMMMMMMMMMHHHOO+--+++OHMHO-   -OHHHHHHO     +MMHO+OO+OHH+++++++OHHHHMMMMMMMMMHHHOOOHHHHHHOOHM+
++MMHMMMMMMMMMMMMHHOOOHHOOO+-+OMMMO+-   OHHHH- -OHMMMMMOOHOO+-+OH++HHMMMMMMMHHMMMMMHO++HHOHHHHHOOOHM+
++MMHMMMMMMMMMMMMMHOO+OOOHHHHHHMMMMMMHHOOO--OOHMMMMMMHHO+O+OHMMHOOHHHHHHHHHHHHHHHMMHHOOHHHOOHHOOOOHM+
++MMHMMHMMMMMMMMMMHOO+HHOO+++OOOHHMMMMMMMMH+HMHHMMMMHHMMMMMMHHHHHOHHHHMHHHHHHHHHHHHHHHOHHHHHHHOOOOHM+
++MHHHHHMHMMMMMMMMMHH++OHMHMMMMMMMMMMMHHMMHOHMMMMMMMMMMMMMMMHO+++OHHHHHHHHHHHHHHHHHOOHHOOOOOOOOOOOOM+
++MHOO+OHMHHHHHOHHHHHHOHHHMMMMMMMMMMMMMMHO++++OOHMMMMMHH++---+--+OOOOHHHOO+HHHOOOOOOOOOOOOOOOOOOOOOM+
++MH+-+HHHHOOHOOMHHHHOOOO+++OO+OHHHMHHHO+--+OO-++++HHHOO+-    -O+-+++++O+-OOOOO+-----++OOOOOOOOOOOOM+
++MO-+HHHHHHHHHOOOOOOHO+++++- -+OHHHHO++--+OOHO++OOOHHHHHHO+    +-++++++-+OOOO+-     -++OOOOOOOOOOOH+
++MH+HOOOOOOO++++++OH++OO+O-  -OHMMMMMHHOOHMMMMHMHMHMMMMMMMH+-    --++OOOOOOOO+---   -+++OOOOOOOOOOH+
++MO+- ----- ----++-- OO-++- -OMMMMMMMMHMMMMMMMMMMMMMMMMMMMHO+-     --++OOOOOO+-+-   ++++OOOOOOOOOHM+
++MO           ---    ++ -  -+OHMMMMMMMMMMMMMMMMMMMMMMMMMMMHO+++--     -+OOOOO+-++   +O++++OOOOOOOHM+
++MO           -       -    -+OHMMMMMMMMMMMMMMMMMMMMMMMMMMHOO++++OOO+- --++OOOO+++-  +O++++OOOOOOOOM+
++MO-                        -+OHMMMMMMMMMMMMMMMMMMMMMMHOO+-----+++OOOO+---+OOOOO+-- +O++-++OOOOOOOM+
++MH-   ------  --           -+-++O+HHOOHMHHHHMHHHHMOOH+--+ - ----+++OOHO+--+OOOOO- -+O+++++++OOOOOM+
++MH+--------------------------------O--+OO++O+O++O+--O+------------++OOOOO--+OOOO+-+++++++++++++OHM+
+-HOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO+OOOOOOOOOOOOOOOOOOOOHH-
