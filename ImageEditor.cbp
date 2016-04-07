@@ -13,7 +13,6 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O3" />
-					<Add option="-static" />
 					<Add option="-mno-ms-bitfields" />
 				</Compiler>
 				<Linker>
