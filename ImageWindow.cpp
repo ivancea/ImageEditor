@@ -16,8 +16,12 @@ std::map<sf::Keyboard::Key, void(*)(Image*&,void*)> keyBindings = {
     {sf::Keyboard::Z, [](Image*& image,void*){image->cartoonize(2);}}
 };
 
+ImageWindow::ImageWindow()
+:_mustPrepare(false){
+}
+
 ImageWindow::ImageWindow(std::string imageName)
-:_imageName(imageName){
+:_imageName(imageName),_mustPrepare(false){
 }
 
 MutexedImage* ImageWindow::prepareWindow(std::map<std::string,MutexedImage*>& images){
@@ -49,6 +53,21 @@ MutexedImage* ImageWindow::prepareWindow(std::map<std::string,MutexedImage*>& im
         }
     }else{
         _window.close();
+        _imageName = "";
+        _mouse.x = _mouse.y = 0;
+    }
+    _mustPrepare = false;
+    return img;
+}
+
+MutexedImage* ImageWindow::getImage(std::map<std::string,MutexedImage*>& images){
+    auto it = images.find(_imageName);
+    MutexedImage* img = nullptr;
+    if(it!=images.end()){
+        img = it->second;
+    }else{
+        _window.close();
+        _imageName = "";
         _mouse.x = _mouse.y = 0;
     }
     return img;
@@ -57,7 +76,11 @@ MutexedImage* ImageWindow::prepareWindow(std::map<std::string,MutexedImage*>& im
 bool ImageWindow::loop(std::map<std::string,MutexedImage*>& images){
     bool running = true;
     sf::Event ev;
-    MutexedImage* img = prepareWindow(images);
+    MutexedImage* img = nullptr;
+    if(_mustPrepare)
+        img = prepareWindow(images);
+    else
+        img = getImage(images);
     if(img==nullptr)
         return false;
     while(running && _window.pollEvent(ev)){
@@ -90,9 +113,11 @@ bool ImageWindow::loop(std::map<std::string,MutexedImage*>& images){
         }
     }
 
-    _window.clear();
-    _window.draw(*img);
-    _window.display();
+    if(running){
+        _window.clear();
+        _window.draw(*img);
+        _window.display();
+    }
 
     return !running;
 }

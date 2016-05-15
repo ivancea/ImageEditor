@@ -36,6 +36,7 @@ class Image : public sf::Drawable{
 public:
     Image();
     Image(const Image& img);
+    Image(Image&& img);
 
     Image& operator=(const Image& img);
 
@@ -72,7 +73,7 @@ public:
 
     void create(int x, int y, sf::Color p = sf::Color::Black);
     bool paste(const Image& img, int destOffsetX, int destOffsetY, int srcOffsetX=0, int srcOffsetY=0, int width=0, int height=0);
-    Image copy(int offsetX=0, int offsetY=0, int width=0, int height=0) const;
+    Image copy(int offsetX=0, int offsetY=0, int width=-1, int height=-1) const;
     int compareTo(const Image& img) const;
     Image compareToMask(const Image& img, sf::Color equal = sf::Color::White, sf::Color different = sf::Color::Black) const;
     Image& scale(double scaleX, double scaleY);

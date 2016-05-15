@@ -312,7 +312,20 @@ bool interpret(string cmd, vector<string> args){
     return false;
 }
 
+void loadTest(){
+    interpret("create",{"window","wnd"});
+    interpret("create",{"image","img"});
+    interpret("bind",{"window","wnd"});
+    interpret("bind",{"image","img"});
+    interpret("open",{"images/tigre.bmp"});
+    interpret("attach",{});
+}
+
 int main (int argc, char** argv) {
+    loadTest();
+    auto t = images["img"]->lock();
+    //t->scale(0.3, 1.5);
+    images["img"]->unlock(),
     srand(time(0));
     if(argc>=2){
         for(int i=1; i<argc; i++){

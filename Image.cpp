@@ -19,6 +19,15 @@ Image::Image(const Image& img){
     }
 }
 
+Image::Image(Image&& img){
+    _m = img._m;
+    _x = img._x;
+    _y = img._y;
+    img._m = nullptr;
+    img._x = 0;
+    img._y = 0;
+}
+
 Image& Image::operator=(const Image& img){
     destroy(_m, _x,_y);
     _x = img.getX();
@@ -91,14 +100,15 @@ bool Image::paste(const Image& img, int destOffsetX, int destOffsetY, int srcOff
 }
 
 Image Image::copy(int offsetX, int offsetY, int width, int height) const{
-    if(offsetX>=_x ||offsetY>=_y
-    || offsetX+width<=0 || offsetY+height<=0)
-        return Image();
-    if(width<=0 || width+offsetX>_x)
-        width = _x-offsetX;
-    if(height<=0 || height+offsetY>_y)
-        height = _y-offsetY;
-
+    Image ret;
+    if(width==-1)
+        width = _x;
+    if(height==-1)
+        height = _y;
+    if(width<=0 || height<=0
+    || offsetX>=_x || offsetY>=_y
+    || offsetX+width<0 || offsetY+height<0)
+        return ret;
     if(offsetX<0){
         width += offsetX;
         offsetX = 0;
@@ -107,13 +117,15 @@ Image Image::copy(int offsetX, int offsetY, int width, int height) const{
         height += offsetY;
         offsetY = 0;
     }
-
-    Image temp;
-    temp.create(width, height);
+    if(offsetX+width>=_x)
+        width = _x-offsetX;
+    if(offsetY+height>=_x)
+        height = _x-offsetY;
+    ret.create(width, height);
     for(int i=0; i<width; i++)
         for(int j=0; j<height; j++)
-            temp.set(i,j, _m[offsetX+i][offsetY+j]);
-    return temp;
+            ret.set(i,j, _m[offsetX+i][offsetY+j]);
+    return ret;
 }
 
 int Image::compareTo(const Image& img) const{
@@ -141,7 +153,7 @@ Image Image::compareToMask(const Image& img, sf::Color equal, sf::Color differen
     return t;
 }
 
-Image& Image::scale(double scaleX, double scaleY){
+/*Image& Image::scaleBasic(double scaleX, double scaleY){
     if(scaleX <= 0 || scaleY <= 0)
         return *this;
     sf::Color **t;
@@ -152,6 +164,39 @@ Image& Image::scale(double scaleX, double scaleY){
     for(int i=0; i<x; i++)
         for(int j=0; j<y; j++){
             t[i][j] = _m[int(i/scaleX)][int(j/scaleY)];
+        }
+    destroy(_m, _x,_y);
+    _m = t;
+    _x = x;
+    _y = y;
+    return *this;
+}*/
+
+Image& Image::scale(double scaleX, double scaleY){
+    if(scaleX <= 0 || scaleY <= 0)
+        return *this;
+    sf::Color **t;
+    int x = _x*scaleX,
+        y = _y*scaleY;
+    fill(t, x,y);
+
+    for(int i=0; i<x; i++)
+        for(int j=0; j<y; j++){
+            sf::Vector3f newColor;
+            int total=0;
+            for(int n=floor(i/scaleX); n<=ceil(i/scaleX) && n<_x; n++)
+                for(int m=floor(j/scaleY); m<=ceil(j/scaleY) && m<_y; m++){
+                    sf::Vector2f p(n-i/scaleX, m-j/scaleY);
+                    sf::Vector3f c;
+                    c.x = _m[n][m].r*(1-abs(n-i/scaleX))*(1-abs(m-j/scaleY));
+                    c.y = _m[n][m].g*(1-abs(n-i/scaleX))*(1-abs(m-j/scaleY));
+                    c.z = _m[n][m].b*(1-abs(n-i/scaleX))*(1-abs(m-j/scaleY));
+                    newColor += c;
+                    total++;
+                }
+            if(total==0)
+                total = 1;
+            t[i][j] = sf::Color(newColor.x/total, newColor.y/total, newColor.z/total);
         }
     destroy(_m, _x,_y);
     _m = t;
