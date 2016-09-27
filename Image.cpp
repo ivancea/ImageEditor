@@ -370,16 +370,21 @@ Image& Image::charcoal(unsigned char tolerance){
     for(int i=0; i<_x; i++)
         for(int j=0; j<_y; j++)
             for(int n=-1; n<=1; n++){
-                for(int m=-1; m<=1; m++){
+                bool mustEnd = false;
+                for(int m=-1; m<=1 && !mustEnd; m++){
                     if((n!=0 || m!=0) && i+n>=0 && i+n<_x && j+m>=0 && j+m<_y)
                         if((int)_m[i+n][j+m].r-(int)_m[i][j].r>tolerance ||
                            (int)_m[i+n][j+m].g-(int)_m[i][j].g>tolerance ||
-                           (int)_m[i+n][j+m].b-(int)_m[i][j].b>tolerance)
+                           (int)_m[i+n][j+m].b-(int)_m[i][j].b>tolerance){
+                            mustEnd = true;
                             break;
+                        }
                     if(n==1 && m==1){
                         t[i][j] = sf::Color(255,255,255);
                     }
                 }
+                if(mustEnd)
+                    break;
             }
     destroy(_m,_x,_y);
     _m = t;
@@ -486,7 +491,7 @@ Image& Image::replaceColor(sf::Color toSearch, unsigned char tolerance, sf::Colo
     for(int i=0; i<_x; i++)
         for(int j=0; j<_y; j++){
             if(abs((int)_m[i][j].r+(int)_m[i][j].g+(int)_m[i][j].b
-                -(int)toSearch.r-(int)toSearch.g-(int)toSearch.b)<=tolerance)
+                -(int)toSearch.r-(int)toSearch.g-(int)toSearch.b)<=tolerance*3)
                 _m[i][j] = newColor;
         }
     return *this;
