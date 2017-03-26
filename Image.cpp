@@ -637,6 +637,8 @@ Image& Image:: cartoon(unsigned char level, unsigned char tolerance){
 }
 
 void Image::draw(sf::RenderTarget& rt, sf::RenderStates rs)const{
+    if(_x == 0 || _y == 0)
+        return;
     sf::Image img;
     img.create(_x, _y);
     for(int i=0; i<_x; i++)

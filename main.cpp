@@ -317,13 +317,14 @@ void loadTest(){
     interpret("create",{"image","img"});
     interpret("bind",{"window","wnd"});
     interpret("bind",{"image","img"});
-    interpret("open",{"images/tigre.bmp"});
+    interpret("open",{"images/mapa.bmp"});
     interpret("attach",{});
 }
 
 int main (int argc, char** argv) {
     /*loadTest();
     auto t = images["img"]->lock();
+    t->replaceColor(sf::Color::Black, 246, sf::Color::Black);
     t->charcoal(20);
     images["img"]->unlock();*/
     srand(time(0));
