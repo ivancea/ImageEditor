@@ -11,7 +11,8 @@ add_executable(ImageEditor main.cpp)
 
 add_library(Image Image.cpp Image.hpp)
 add_library(ImageWindow ImageWindow.cpp ImageWindow.hpp)
+add_library(MutexedImage INTERFACE)
+target_sources(MutexedImage INTERFACE ${CMAKE_SOURCE_DIR}/MutexedImage.hpp)
 
 target_link_libraries(ImageWindow Image)
-target_link_libraries(ImageEditor Image ImageWindow)
-target_link_libraries(ImageEditor ${CONAN_LIBS})
+target_link_libraries(ImageEditor Image ImageWindow MutexedImage ${CONAN_LIBS})
