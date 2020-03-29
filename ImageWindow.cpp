@@ -1,4 +1,4 @@
-#include "ImageWindow.h"
+#include "ImageWindow.hpp"
 
 #include <windows.h>
 

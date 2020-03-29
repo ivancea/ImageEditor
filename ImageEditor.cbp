@@ -26,10 +26,10 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="Image.cpp" />
-		<Unit filename="Image.h" />
+		<Unit filename="Image.hpp" />
 		<Unit filename="ImageWindow.cpp" />
-		<Unit filename="ImageWindow.h" />
-		<Unit filename="MutexedImage.h" />
+		<Unit filename="ImageWindow.hpp" />
+		<Unit filename="MutexedImage.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

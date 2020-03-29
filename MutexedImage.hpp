@@ -5,7 +5,7 @@
 #include <mutex>
 #include <SFML/Graphics.hpp>
 
-#include "Image.h"
+#include "Image.hpp"
 
 class MutexedImage : public sf::Drawable{
     mutable std::recursive_mutex _m;

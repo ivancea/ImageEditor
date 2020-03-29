@@ -1,0 +1,10 @@
+[generators]
+cmake
+
+[requires]
+freetype/2.10.0@bincrafters/stable
+sfml/2.5.0@bincrafters/stable
+
+[options]
+sfml:graphics=True
+sfml:window=True

@@ -1,4 +1,4 @@
-#include "Image.h"
+#include "Image.hpp"
 
 #include <iostream>
 #include <fstream>

@@ -4,7 +4,7 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 
-#include "MutexedImage.h"
+#include "MutexedImage.hpp"
 
 class ImageWindow{
     sf::RenderWindow _window;

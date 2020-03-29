@@ -8,9 +8,9 @@
 #include <thread>
 #include <chrono>
 
-#include "Image.h"
-#include "MutexedImage.h"
-#include "ImageWindow.h"
+#include "Image.hpp"
+#include "MutexedImage.hpp"
+#include "ImageWindow.hpp"
 
 using namespace std;
 
