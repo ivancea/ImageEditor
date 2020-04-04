@@ -2,8 +2,8 @@
 images/
 
 # Code::Blocks
-ImageEditor.depend
-ImageEditor.layout
+*.depend
+*.layout
 obj
 bin
 
